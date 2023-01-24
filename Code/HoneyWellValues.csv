@@ -1,0 +1,9 @@
+ip,connected,state,fault,alarm,concentration,units,temperature,life,flow,low-alarm threshold,high-alarm threshold
+169.254.60.47,True,Monitoring,No fault,none,0.0,ppm,24,323.625,720,12.5,25.0
+169.254.60.47,True,Monitoring,No fault,none,0.0,ppm,24,323.625,720,12.5,25.0
+169.254.60.47,True,Monitoring,No fault,none,0.0,ppm,24,323.625,720,12.5,25.0
+169.254.60.47,True,Monitoring,No fault,none,0.0,ppm,24,323.625,720,12.5,25.0
+169.254.60.47,True,Monitoring,No fault,none,0.0,ppm,24,323.625,720,12.5,25.0
+169.254.60.47,True,Monitoring,No fault,none,0.0,ppm,24,323.625,591,12.5,25.0,2023-01-24_17-27-35
+169.254.60.47,True,Monitoring,No fault,none,0.0,ppm,24,323.625,591,12.5,25.0,2023-01-24_17-27-35
+169.254.60.47,True,Monitoring,No fault,none,0.0,ppm,24,323.625,591,12.5,25.0,2023-01-24_17-27-35

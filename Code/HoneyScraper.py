@@ -5,8 +5,8 @@ from midas import GasDetector
 import pandas as pd
 import os.path
 from csv import writer
-#from datetime import datetime
-#from pytz import timezone
+from datetime import datetime
+from pytz import timezone
 
 
 # variables
@@ -15,8 +15,8 @@ directory = "C:/Users/lilit/Git_repos/HoneyScraper/Code/"
 IPAdress = '169.254.60.47'
 interval = 10 #seconds
 # TODO: add time with time zone. There is an incompatibility with the package time and pytz or datetime?
-#switzerland = timezone('Europe/Zurich')
-#time = datetime.now(switzerland)
+switzerland = timezone('Europe/Zurich')
+sui_time = datetime.now(switzerland)
 
 # create path from variables
 path = os.path.join(directory, filename)
@@ -33,7 +33,7 @@ mydictionary = asyncio.run(get())
 # just print the value of fault not a dictionary
 mydictionary["fault"] = mydictionary["fault"]["status"]
 # add current time to dictionary
-#mydictionary["time"] = time.strftime('%Y-%m-%d_%H-%M-%S')
+mydictionary["time"] = sui_time.strftime('%Y-%m-%d_%H-%M-%S')
 
 print(mydictionary)
 
