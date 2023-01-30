@@ -21,14 +21,15 @@ For example:
 ```
 python C:\Users\name\folder\myproject\code\HoneyScraper.py -i 60 -v connected concentration -f myfilename.csv
 ```
+Insert your path to the python script instead.
 The following options are available.
 ```
 options:
   -h, --help            show this help message and exit
   -f FILENAME, --filename FILENAME
-                        Name of the file where the information is stored. Example: values.csv
+                        Name of the file where the information is stored. Default: HoneywellValues.csv
   -d DIRECTORY, --directory DIRECTORY
-                        Directory in which the file should be saved. Default: location of the script
+                        Directory in which the file should be saved. Default: location of the python script. (HoneyScraper.py)
   -a IPADDRESS, --ipaddress IPADDRESS
                         IP Address of the gas detector. Default: 169.254.60.47
   -i INTERVAL, --interval INTERVAL
