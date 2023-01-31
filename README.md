@@ -9,16 +9,8 @@ In case you don't have pw.txt. Contact Lilith Feer or remove all the lines that 
 
 ## Usage
 1) Open your terminal.
-2) Write the following command, but insert the name of your environment instead.
-```
-conda activate {environment name}
-```
-In case you don't remember the name of your environment, you can see all the environments using 
-```
-conda env list
-```
 
-3) Run your command.
+2) Run your command.
 For example:
 ```
 python C:\Users\name\folder\myproject\code\HoneyScraper.py -e my.email@address.com -i 60 -v connected concentration -f myfilename.csv
@@ -42,5 +34,5 @@ The following options are available.
                         temperature, life, flow, low-alarm threshold,high-alarm threshold, time
 ```
 
-4) You can stop the process using [Ctrl] + [C]
+3) You can stop the process using [Ctrl] + [C]
 
