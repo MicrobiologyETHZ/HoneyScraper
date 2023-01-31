@@ -4,8 +4,12 @@ import time
 from midas import GasDetector
 import os.path
 import argparse
+
+# for e-mail sending function
 import smtplib
 from email.mime.text import MIMEText
+
+# time
 from datetime import datetime
 from pytz import timezone
 
@@ -24,7 +28,7 @@ async def get_new_data():
 
 # call this part of code every x minutes
 # flush --> write it to the file (.csv)
-async def write_dict_to_csv(path, values_to_write, error):
+async def write_dict_to_csv(path, values_to_write, error, emailaddress, IPAddress, honeywellmailaddress, apppassword):
     sui_time = datetime.now(switzerland)
     if type(error)==list:
         # we need this because async.gather returns a list of values (one for each function)
@@ -52,8 +56,25 @@ async def write_dict_to_csv(path, values_to_write, error):
         error = error + 1
         #print(error)
         row=['NA']*len(values_to_write)
+        sui_time = datetime.now(switzerland)
+        row[-1] = sui_time.strftime('%Y-%m-%d_%H-%M-%S')
+        # only first exception (error is the counter) will send an email
         if error == 1:
-            print("Connection was lost: e-mail is being sent.")
+            print("Connection was lost: e-mail is being sent...")
+            # create the email message
+            msg = MIMEText("The connection to the Honeywell Midas gas detector " + IPAddress + " was lost on " +
+                           sui_time.strftime('%Y-%m-%d_%H-%M-%S') + ".")
+            # set desired values
+            msg['Subject'] = "Connection to gas detector was lost"
+            msg['From'] = honeywellmailaddress
+            msg['To'] = emailaddress
+            # establish SMTP connection to gmail server over a secure SSL connection
+            smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            # log in to email server
+            smtp_server.login(honeywellmailaddress, apppassword)
+            # send
+            smtp_server.sendmail(honeywellmailaddress, emailaddress, msg.as_string())
+            smtp_server.quit()
 
     # happens anyways
     finally:
@@ -69,7 +90,7 @@ async def write_dict_to_csv(path, values_to_write, error):
 
 
 # call write_dict_to_csv all x seconds
-async def call_function(values_to_write, path, interval, periodic_function, error):
+async def call_function(values_to_write, path, interval, periodic_function, error, emailaddress, IPAddress, honeywellmailaddress, apppassword):
 
     while True:
         # prints time since beginning when it is running
@@ -82,7 +103,7 @@ async def call_function(values_to_write, path, interval, periodic_function, erro
         # very small drifts can still happen
         error = await asyncio.gather(
             asyncio.sleep(interval),
-            periodic_function(path, values_to_write, error),
+            periodic_function(path, values_to_write, error, emailaddress, IPAddress, honeywellmailaddress, apppassword),
         )
 
 if __name__ == '__main__':
@@ -90,9 +111,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='HoneyScraper',
                                      description="Get information from the Honeywell Midas Gas Detector")
     parser.add_argument("-f", "--filename", default="HoneywellValues.csv",
-                        help="Name of the file where the information is stored. Example: values.csv")
+                        help="Name of the file where the information is stored. Default: HoneywellValues.csv")
     parser.add_argument("-d", "--directory", default=os.path.dirname(os.path.realpath(__file__)),
                         help="Directory in which the file should be saved. Default: location of the script")
+    parser.add_argument("-e", "--email", required=True,
+                        help="An e-mail address, where an e-mail will be sent in case of loss of connection. "
+                             "Mandatory argument.")
     parser.add_argument("-a", "--ipaddress", type=str, default='169.254.60.47',
                         help="IP Address of the gas detector. Default: 169.254.60.47")
     parser.add_argument("-i", "--interval", type=float, default=300,
@@ -103,12 +127,13 @@ if __name__ == '__main__':
                         help="Columns to write to the file. Options: ip, connected, state, fault, "
                              "alarm, concentration, units, temperature, life, flow, low-alarm threshold,"
                              "high-alarm threshold, time")
+
     # run the parser and place the extracted data in an argparse.Namespace object
     args = parser.parse_args()
 
     # variables
     filename = args.filename
-    directory = args.directory # "C:/Users/lilit/Git_repos/HoneyScraper/Code/"
+    directory = args.directory
     # create path from variables
     print(str("Saving " + filename + " to " + directory))
     path = os.path.join(directory, filename)
@@ -120,6 +145,12 @@ if __name__ == '__main__':
     values_to_write = args.values
     # how many times the error occurred
     error = 0
+    # e mail variables
+    emailaddress = args.email
+    honeywellmailaddress = "honeywellscraper@gmail.com"
+    # get app password in the folder where the script is
+    apppassword = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "pw.txt"), "r")
+    apppassword = apppassword.read()
 
     # write the title
     with open(path, "a", newline='') as obj:
@@ -135,17 +166,13 @@ if __name__ == '__main__':
         valuedictionary["time"] = sui_time.strftime('%Y-%m-%d_%H-%M-%S')
 
     except:
-        row=['NA']*len(values_to_write)
-        row = [str(r) if type(r) != str else r for r in row]
-        print(row)
-        with open(path, "a", newline='') as obj:
-            obj.write(",".join(row) + "\n")
+        print("There is no connection to the Gas Detector.")
 
     # needed to print the run time in the console
     orig_start_time = time.time()
 
     # start the process
-    asyncio.run(call_function(values_to_write, path, interval, write_dict_to_csv, error))
+    asyncio.run(call_function(values_to_write, path, interval, write_dict_to_csv, error, emailaddress, IPAddress, honeywellmailaddress, apppassword))
 
 
 
