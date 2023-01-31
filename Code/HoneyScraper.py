@@ -54,27 +54,31 @@ async def write_dict_to_csv(path, values_to_write, error, emailaddress, IPAddres
         # error counter for exception --> only do e-mail for the first exception
         error = error + 1
         # in case of disconnect return NA
-        row=['NA']*len(values_to_write)
+        row = ['NA']*len(values_to_write)
         sui_time = datetime.now(switzerland)
         # add date and time for disconnect row
         row[-1] = sui_time.strftime('%Y-%m-%d_%H-%M-%S')
         # only first exception (error is the counter) will send an email
         if error == 1:
-            print("Connection was lost: e-mail is being sent...")
+            print("Connection to device was lost: trying to send e-mail...")
             # create the email message
-            msg = MIMEText("The connection to the Honeywell Midas gas detector " + IPAddress + " was lost on " +
-                           sui_time.strftime('%Y-%m-%d_%H-%M-%S') + ".")
-            # set desired values
-            msg['Subject'] = "Connection to gas detector was lost"
-            msg['From'] = honeywellmailaddress
-            msg['To'] = emailaddress
-            # establish SMTP connection to gmail server over a secure SSL connection
-            smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-            # log in to email server
-            smtp_server.login(honeywellmailaddress, apppassword)
-            # send
-            smtp_server.sendmail(honeywellmailaddress, emailaddress, msg.as_string())
-            smtp_server.quit()
+            try:
+                msg = MIMEText("The connection to the Honeywell Midas gas detector " + IPAddress + " was lost on " +
+                               sui_time.strftime('%Y-%m-%d_%H-%M-%S') + ".")
+                # set desired values
+                msg['Subject'] = "Connection to gas detector was lost"
+                msg['From'] = honeywellmailaddress
+                msg['To'] = emailaddress
+                # establish SMTP connection to gmail server over a secure SSL connection
+                smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+                # log in to email server
+                smtp_server.login(honeywellmailaddress, apppassword)
+                # send
+                smtp_server.sendmail(honeywellmailaddress, emailaddress, msg.as_string())
+                smtp_server.quit()
+                print("e-mail was sent to "+ emailaddress + ".")
+            except:
+                print("There is no internet connection. No e-mail was sent.")
 
     # happens anyways
     finally:
@@ -122,7 +126,7 @@ if __name__ == '__main__':
                         help="IP Address of the gas detector. Default: 169.254.60.47")
     parser.add_argument("-i", "--interval", type=float, default=300,
                         help="Time distance between the measurements in seconds. Default: 300")
-    parser.add_argument("-v", "--values", nargs='+',
+    parser.add_argument("-c", "--columns", nargs='+',
                         default=('ip', 'connected', 'state', 'fault', 'alarm', 'concentration', 'units', 'temperature',
                                  'life', 'flow', 'low-alarm threshold', 'high-alarm threshold', 'time'),
                         help="Columns to write to the file. Options: ip, connected, state, fault, "
@@ -143,7 +147,7 @@ if __name__ == '__main__':
     path = os.path.join(directory, filename)
 
     # order of the columns and which columns we want
-    values_to_write = args.values
+    values_to_write = args.columns
     # how many times the error occurred
     error = 0
 
