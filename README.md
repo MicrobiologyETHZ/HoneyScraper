@@ -5,6 +5,7 @@ Python Script that accesses the Honeywell Midas Gas Detector periodically and wr
 ```
 git clone https://github.com/MicrobiologyETHZ/HoneyScraper.git
 ```
+In case you don't have pw.txt. Contact Lilith Feer or remove all the lines that affect the e-mail sending. (line 65-77, 118-120, 150-155 and remove the function inputs (honeywellmailaddress, apppassword and emailaddress))
 
 ## Usage
 1) Open your terminal.
@@ -16,12 +17,11 @@ In case you don't remember the name of your environment, you can see all the env
 ```
 conda env list
 ```
-In case you don't have pw.txt. Contact Lilith Feer or uncomment all the lines that affect the e-mail sending. (line 65-77, 118-120, 150-155 and remove the function inputs (honeywellmailaddress, apppassword and emailaddress))
 
 3) Run your command.
 For example:
 ```
-python C:\Users\name\folder\myproject\code\HoneyScraper.py -i 60 -v connected concentration -f myfilename.csv
+python C:\Users\name\folder\myproject\code\HoneyScraper.py -e my.email@address.com -i 60 -v connected concentration -f myfilename.csv
 ```
 Insert your path to the python script instead.
 The following options are available.
