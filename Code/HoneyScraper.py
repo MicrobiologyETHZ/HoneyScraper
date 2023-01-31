@@ -21,7 +21,6 @@ from pytz import timezone
 async def get_new_data():
     # "with" --> we are using a context manager --> prevents a lot of boiler plate code
     async with GasDetector(IPAddress) as detector:
-        #print(await detector.get_new_data())
         # return current state
         return await detector.get()
 
@@ -54,9 +53,10 @@ async def write_dict_to_csv(path, values_to_write, error, emailaddress, IPAddres
     except:
         # error counter for exception --> only do e-mail for the first exception
         error = error + 1
-        #print(error)
+        # in case of disconnect return NA
         row=['NA']*len(values_to_write)
         sui_time = datetime.now(switzerland)
+        # add date and time for disconnect row
         row[-1] = sui_time.strftime('%Y-%m-%d_%H-%M-%S')
         # only first exception (error is the counter) will send an email
         if error == 1:
@@ -89,8 +89,9 @@ async def write_dict_to_csv(path, values_to_write, error, emailaddress, IPAddres
     return error
 
 
-# call write_dict_to_csv all x seconds
-async def call_function(values_to_write, path, interval, periodic_function, error, emailaddress, IPAddress, honeywellmailaddress, apppassword):
+# call write_dict_to_csv every x seconds
+async def call_function(values_to_write, path, interval, periodic_function, error, emailaddress, IPAddress,
+                        honeywellmailaddress, apppassword):
 
     while True:
         # prints time since beginning when it is running
@@ -132,19 +133,20 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # variables
+    IPAddress = args.ipaddress
+    interval = args.interval  # seconds
+    switzerland = timezone('Europe/Zurich')
     filename = args.filename
     directory = args.directory
     # create path from variables
     print(str("Saving " + filename + " to " + directory))
     path = os.path.join(directory, filename)
-    IPAddress = args.ipaddress
-    #IPAddress='169.254.60.47'
-    interval = args.interval  # seconds
-    switzerland = timezone('Europe/Zurich')
+
     # order of the columns and which columns we want
     values_to_write = args.values
     # how many times the error occurred
     error = 0
+
     # e mail variables
     emailaddress = args.email
     honeywellmailaddress = "honeywellscraper@gmail.com"
@@ -172,12 +174,8 @@ if __name__ == '__main__':
     orig_start_time = time.time()
 
     # start the process
-    asyncio.run(call_function(values_to_write, path, interval, write_dict_to_csv, error, emailaddress, IPAddress, honeywellmailaddress, apppassword))
-
-
-
-# warning e mail if it's not running or if the output is only zeroes
-
+    asyncio.run(call_function(values_to_write, path, interval, write_dict_to_csv, error, emailaddress, IPAddress,
+                              honeywellmailaddress, apppassword))
 
 
 
