@@ -21,7 +21,7 @@ conda env list
 3) Run your command.
 For example:
 ```
-python C:\Users\name\folder\myproject\code\HoneyScraper.py -i 60 -v connected concentration -f myfilename.csv
+python C:\Users\name\folder\myproject\code\HoneyScraper.py -e my.email@address.com -i 60 -v connected concentration -f myfilename.csv
 ```
 Insert your path to the python script instead.
 The following options are available.
