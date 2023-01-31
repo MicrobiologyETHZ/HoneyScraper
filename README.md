@@ -16,7 +16,6 @@ In case you don't remember the name of your environment, you can see all the env
 ```
 conda env list
 ```
-In case you don't have pw.txt. Contact Lilith Feer or uncomment all the lines that affect the e-mail sending. (line 65-77, 118-120, 150-155 and remove the function inputs (honeywellmailaddress, apppassword and emailaddress))
 
 3) Run your command.
 For example:
@@ -43,4 +42,6 @@ The following options are available.
 ```
 
 4) You can stop the process using [Ctrl] + [C]
+
+In case you don't have pw.txt. Contact Lilith Feer or uncomment all the lines that affect the e-mail sending. (line 65-77, 118-120, 150-155 and remove the function inputs (honeywellmailaddress, apppassword and emailaddress))
 
