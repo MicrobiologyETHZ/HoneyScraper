@@ -5,6 +5,7 @@ Python Script that accesses the Honeywell Midas Gas Detector periodically and wr
 ```
 git clone https://github.com/MicrobiologyETHZ/HoneyScraper.git
 ```
+In case you don't have pw.txt. Contact Lilith Feer or uncomment all the lines that affect the e-mail sending. (line 65-77, 118-120, 150-155 and remove the function inputs (honeywellmailaddress, apppassword and emailaddress))
 
 ## Usage
 1) Open your terminal.
@@ -42,6 +43,4 @@ The following options are available.
 ```
 
 4) You can stop the process using [Ctrl] + [C]
-
-In case you don't have pw.txt. Contact Lilith Feer or uncomment all the lines that affect the e-mail sending. (line 65-77, 118-120, 150-155 and remove the function inputs (honeywellmailaddress, apppassword and emailaddress))
 
